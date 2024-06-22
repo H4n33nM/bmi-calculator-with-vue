@@ -1,0 +1,217 @@
+<!--HANEEN MO'MEN
+    A21EC0260
+    SECJ3483 - WEB TECHNOLOGY SECTION 03
+    LAB ACTIVITY 07-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Lab Exercise 7 - Simple Vue App</title>
+    <!-- Include Vue.js library -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        /* Styling for the form */
+        body {
+            background-color: #0c0b0e;
+            color: #9a5ae9;
+            font-family: "Courier New", Courier, monospace;
+        }
+
+        form {
+            border: 5px solid #332e39;
+            padding: 20px;
+            width: 400px;
+            background-color: #1f1c23;
+            margin: 0 auto;
+            /* Center the form */
+        }
+
+        input[type="text"] {
+            margin-bottom: 10px;
+            padding: 5px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            background-color: #cccccc;
+        }
+
+        input[type="text"]:focus {
+            background-color: #46276d;
+            color: #ffffff;
+        }
+
+        button {
+            background-color: #46276d;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #713cb1;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            /* Collapse table borders */
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 2px solid #d3b3fa;
+            padding: 8px;
+            text-align: left;
+            font-size: small;
+        }
+
+        th {
+            background-color: #d3b3fa;
+            color: #1f1c23;
+            font-size: small;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <form v-on:submit.prevent="calculateBMI">
+            <p>{{ message }}</p>
+            Name: <input type="text" v-model="name" placeholder="Enter name"> <br>
+            <br> Year of Birth: <input type="text" v-model="yearBorn" placeholder="Enter year of birth"> <br>
+            <br> Gender:
+            <select v-model="gender">
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+            </select>
+            <br>
+            <br> Weight: <input type="text" v-model="weight" placeholder="Enter weight"> <br>
+            <br> Height: <input type="text" v-model="height" placeholder="Enter height"> <br>
+            <br>
+            <label><input type="checkbox" v-model="termsAccepted"> I accept terms and conditions</label>
+            <br>
+            <br> Payment Type: <br>
+            <label><input type="checkbox" value="Cash" v-model="paymentTypes"> Cash</label><br>
+            <label><input type="checkbox" value="Online Banking" v-model="paymentTypes"> Online Banking</label><br>
+            <label><input type="checkbox" value="Credit" v-model="paymentTypes"> Credit</label><br>
+            <label><input type="checkbox" value="Other" v-model="paymentTypes"> Other</label><br>
+            <br><button>Click Me</button>
+
+
+            <p>{{ name }}</p>
+            <p>{{ yearBorn }}</p>
+            <p>{{ gender }}</p>
+            <p>{{ weight }}</p>
+            <p>{{ height }}</p>
+            <p>BMI: {{ bmi }}</p>
+            <p>Category: {{ category }}</p>
+            <p>Terms Accepted: {{ termsAccepted }}</p>
+            <p>Payment Types: {{ paymentTypes }}</p>
+
+            <!--lab exercise: convert list to table-->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Weight</th>
+                        <th>Height</th>
+                        <th>Total BMI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="person in personList">
+                        <td>{{person.name}}</td>
+                        <td>{{person.age}}</td>
+                        <td>{{person.gender}}</td>
+                        <td>{{person.weight}}</td>
+                        <td>{{person.height}}</td>
+                        <td>{{person.bmi}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!--<ul>
+                <li v-for="person in personList"> Name: {{person.name}} Age: {{person.age}} Gender: {{person.gender}}
+                    Weight: {{person.weight}} Height: {{person.height}} Total BMI: {{person.bmi}}
+                </li>
+            </ul>-->
+    </div>
+    </form>
+    <script>
+        // Initialize Vue app
+        const app = Vue.createApp({
+            data() {
+                return {
+                    URL: "https://www.google.com/",
+                    message: 'BMI Calculator',
+                    name: '',
+                    yearBorn: 0,
+                    gender: '',
+                    weight: 0,
+                    height: 0,
+                    bmi: null, // Initialize to null
+                    category: null, // Initialize to null
+                    isSeniorCitizen: false,
+                    arr: [],
+                    obj: {},
+                    termsAccepted: false,
+                    paymentTypes: [],
+                    personList: []
+                }
+            },
+            methods: {
+                calculateBMI() {
+                    // event.preventDefault()
+                    if (!isNaN(this.weight) && !isNaN(this.height) && this.height !== 0) {
+                        // Calculate BMI
+                        this.bmi = (this.weight / ((this.height / 100) * (this.height / 100))).toFixed(2);
+                    } else {
+                        alert('Please enter valid weight and height.');
+                        return;
+                    }
+
+                    // Calculate age
+                    const currentYear = new Date().getFullYear();
+                    this.age = currentYear - parseInt(this.yearBorn); // Calculate age based on year of birth
+
+                    // Categorize senior citizen
+                    if (this.age >= 60) {
+                        this.isSeniorCitizen = true;
+                    } else {
+                        this.isSeniorCitizen = false;
+                    }
+
+                    // Categorize BMI
+                    if (this.bmi < 18.5) {
+                        this.category = 'Underweight';
+                    } else if (this.bmi >= 18.5 && this.bmi < 24.9) {
+                        this.category = 'Normal weight';
+                    } else if (this.bmi >= 25 && this.bmi < 29.9) {
+                        this.category = 'Overweight';
+                    } else {
+                        this.category = 'Obese';
+                    }
+
+                    //create object
+                    const person = {
+                        name: this.name, age: this.age, gender: this.gender,
+                        weight: this.weight, height: this.height, bmi: this.bmi
+                    };
+                    this.personList.push(person);
+                }
+            },
+        });
+        app.mount('#app');
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+<html>
+<head>
+<title>Simple Vue App</title>
+<!-- Include Vue.js library -->
+<script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+</head>
+<body>
+<div id="app">
+<p>message : {{ message }}</p>
+</div>
+<script>
+// Initialize Vue app
+const app = Vue.createApp({
+data() {
+return {
+message: 'My First Vue App' }
+}, methods:{ }, });
+app.mount('#app');
+</script>
+</body>
+</html>
